@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Vormkracht10\LaravelStatic\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LaravelStaticCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-static';
 
     public $description = 'My command';
 
