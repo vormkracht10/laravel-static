@@ -7,6 +7,11 @@ return [
     'path' => storage_path('static'),
 
     /**
+     * Configure a fallback cache driver.
+     */
+    'fallback_cache' => 'memcached',
+
+    /**
      * Different caches per domain.
      */
     'include_domain' => true,
@@ -14,7 +19,7 @@ return [
     /**
      * When query string is included, every unique query string creates a new static file.
      */
-    'include_query_string' => false,
+    'include_query_string' => true,
 
     /**
      * Set path maximum length (determined by operating system config)
@@ -29,7 +34,18 @@ return [
     /**
      * Define if you want to save the static cache after response has been sent to browser.
      */
-    'on_termination' => true,
+    'on_termination' => false,
+
+    /**
+     * This setting prevents saving the same static cache file twice (with and without trailing slash) using a 302 redirect.
+     * Enable when you want to use trailing slashes.
+     */
+    'use_trailing_slash' => false,
+
+    /**
+     * Minify HTML before saving static file.
+     */
+    'minify' => true,
 
     /**
      * Clear static files before warming up static cache.

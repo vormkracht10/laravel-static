@@ -2,16 +2,16 @@
 
 namespace Vormkracht10\LaravelStatic;
 
+use Illuminate\Config\Repository;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Config;
 
 class LaravelStatic
 {
-    protected Config $config;
+    protected Repository $config;
 
     protected Filesystem $files;
 
-    public function __construct(Config $config, Filesystem $files)
+    public function __construct(Repository $config, Filesystem $files)
     {
         $this->config = $config;
         $this->files = $files;

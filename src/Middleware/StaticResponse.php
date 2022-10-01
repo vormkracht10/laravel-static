@@ -3,19 +3,20 @@
 namespace Vormkracht10\LaravelStatic\Middleware;
 
 use Closure;
+use Illuminate\Config\Repository;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Config;
+use voku\helper\HtmlMin;
 
 class StaticResponse
 {
-    protected Config $config;
+    protected Repository $config;
 
     protected Filesystem $files;
 
-    public function __construct(Config $config, Filesystem $files)
+    public function __construct(Repository $config, Filesystem $files)
     {
         $this->config = $config;
         $this->files = $files;
@@ -26,7 +27,13 @@ class StaticResponse
      */
     public function handle(Request $request, Closure $next): mixed
     {
+        if (null !== $redirect = $this->shouldChangeTrailingSlash($request)) {
+            return redirect($redirect);
+        }
+
         $response = $next($request);
+
+        $response = $this->minifyResponse($response);
 
         if (
             ! $this->config->get('static.on_termination') &&
@@ -43,12 +50,40 @@ class StaticResponse
      */
     public function terminate(Request $request, Response $response): void
     {
+        $response = $this->minifyResponse($response);
+
         if (
             $this->config->get('static.on_termination') &&
             $this->shouldBeStatic($request, $response)
         ) {
             $this->createStaticFile($request, $response);
         }
+    }
+
+    /**
+     * Handle tasks after the response has been sent to the browser.
+     */
+    protected function shouldChangeTrailingSlash(Request $request): string|null
+    {
+        $queryString = ($request->getQueryString() ? '?'.$request->getQueryString() : '');
+
+        if (
+            ! $request->is('/') &&
+            $this->config->get('static.use_trailing_slash') &&
+            ! str_ends_with($request->getPathInfo(), '/')
+        ) {
+            return $request->getSchemeAndHttpHost().$request->getPathInfo().'/'.$queryString;
+        }
+
+        if (
+            ! $request->is('/') &&
+            ! $this->config->get('static.use_trailing_slash') &&
+            str_ends_with($request->getPathInfo(), '/')
+        ) {
+            return $request->getSchemeAndHttpHost().rtrim($request->getPathInfo(), '/').$queryString;
+        }
+
+        return null;
     }
 
     /**
@@ -76,6 +111,27 @@ class StaticResponse
     }
 
     /**
+     * Minify response.
+     */
+    public function minifyResponse(Response $response): Response
+    {
+        if (! $this->config->get('static.minify')) {
+            return $response;
+        }
+
+        if (! starts_with($response->headers->get('Content-Type'), 'text/html')) {
+            return $response;
+        }
+
+        $response->setContent(
+            (new HtmlMin())
+                ->minify($response->getContent())
+        );
+
+        return $response;
+    }
+
+    /**
      * Handle tasks after the response has been sent to the browser.
      */
     public function createStaticFile(Request $request, Response $response): void
@@ -83,7 +139,6 @@ class StaticResponse
         [$path, $file] = $this->generateFilepath($request, $response);
 
         $filepath = $this->joinPaths([
-            $this->basePath($request),
             $path,
             $file,
         ]);
@@ -93,6 +148,11 @@ class StaticResponse
         }
 
         $this->files->makeDirectory($path, 0775, true, true);
+
+        if (! $this->files->exists($this->config->get('static.path').'/.gitignore')) {
+            $this->files->put($this->config->get('static.path').'/.gitignore', '*
+!.gitignore');
+        }
 
         if ($response->getContent()) {
             $this->files->put($filepath, $response->getContent(), true);
@@ -166,10 +226,10 @@ class StaticResponse
     {
         $parts = $this->getUriParts($request);
 
-        $file = array_pop($parts);
+        $filename = '';
 
-        if ($this->config->get('static.include_query_string')) {
-            $parts[] = '?'.$request->server('QUERY_STRING');
+        if (! str_ends_with($request->getPathInfo(), '/')) {
+            $filename = array_pop($parts);
         }
 
         $path = $this->joinPaths([
@@ -177,7 +237,11 @@ class StaticResponse
             $parts,
         ]);
 
-        $filename = $file.'.'.$this->getFileExtension($response);
+        if ($this->config->get('static.include_query_string')) {
+            $filename .= '?'.$request->server('QUERY_STRING');
+        }
+
+        $filename .= '.'.$this->getFileExtension($response);
 
         return [$path, $filename];
     }
@@ -189,13 +253,13 @@ class StaticResponse
     {
         $filenameLength = strlen(basename($filepath));
 
-        if ($filenameLength >= $this->config->get('filename_max_length')) {
+        if ($filenameLength >= $this->config->get('static.filename_max_length')) {
             return true;
         }
 
         $filepathLength = strlen($filepath);
 
-        if ($filepathLength >= $this->config->get('filepath_max_length')) {
+        if ($filepathLength >= $this->config->get('static.filepath_max_length')) {
             return true;
         }
 
