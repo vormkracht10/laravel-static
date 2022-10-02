@@ -96,8 +96,7 @@ class StaticResponse
     {
         return
             $request->isMethod('GET') &&
-            $response->getStatusCode() == 200 &&
-            $request->header(array_key_first($this->bypassHeader)) != array_shift($this->bypassHeader);
+            $response->getStatusCode() == 200;
     }
 
     /**
