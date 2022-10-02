@@ -33,12 +33,12 @@ class StaticResponse
 
         $response = $next($request);
 
-        $response = $this->minifyResponse($response);
-
         if (
             ! $this->config->get('static.on_termination') &&
             $this->shouldBeStatic($request, $response)
         ) {
+            $response = $this->minifyResponse($response);
+
             $this->createStaticFile($request, $response);
         }
 
@@ -50,12 +50,12 @@ class StaticResponse
      */
     public function terminate(Request $request, Response $response): void
     {
-        $response = $this->minifyResponse($response);
-
         if (
             $this->config->get('static.on_termination') &&
             $this->shouldBeStatic($request, $response)
         ) {
+            $response = $this->minifyResponse($response);
+
             $this->createStaticFile($request, $response);
         }
     }
@@ -115,7 +115,7 @@ class StaticResponse
      */
     public function minifyResponse(Response $response): Response
     {
-        if (! $this->config->get('static.minify')) {
+        if (! $this->config->get('static.minify_html')) {
             return $response;
         }
 
@@ -150,8 +150,7 @@ class StaticResponse
         $this->files->makeDirectory($path, 0775, true, true);
 
         if (! $this->files->exists($this->config->get('static.path').'/.gitignore')) {
-            $this->files->put($this->config->get('static.path').'/.gitignore', '*
-!.gitignore');
+            $this->files->put($this->config->get('static.path').'/.gitignore', '*'.PHP_EOL.'!.gitignore');
         }
 
         if ($response->getContent()) {
