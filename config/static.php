@@ -4,7 +4,7 @@ return [
     /**
      * Path within storage disk to save files in.
      */
-    'path' => storage_path('static'),
+    'path' => storage_path('app/static'),
 
     /**
      * Configure a fallback cache driver.
@@ -12,24 +12,27 @@ return [
     'fallback_cache' => 'memcached',
 
     /**
+     * Clear static files before warming up static cache.
+     * When disabled, the cache is warmed up rather by updating and overwriting files instead of starting without an existing cache.
+     */
+    'clear_before_warm_up' => false,
+
+    /**
+     * HTTP Header that is being sent to web server by warm up command, to recognize and pass through static cache and
+     * hit the Laravel application on the server.
+     */
+    'warm_up_http_header' => 'X-Laravel-Static',
+
+    /**
      * Different caches per domain.
      */
     'include_domain' => true,
 
     /**
-     * When query string is included, every unique query string creates a new static file.
+     * When query string is included, every unique query string combination creates a new static file.
+     * When disabled, the URL is marked as identical regardless of the query string.
      */
     'include_query_string' => true,
-
-    /**
-     * Set path maximum length (determined by operating system config)
-     */
-    'filepath_max_length' => 4096,
-
-    /**
-     * Filename maximum length (determined by operating system config)
-     */
-    'filename_max_length' => 255,
 
     /**
      * Define if you want to save the static cache after response has been sent to browser.
@@ -45,10 +48,15 @@ return [
     /**
      * Minify HTML before saving static file.
      */
-    'minify' => true,
+    'minify_html' => true,
 
     /**
-     * Clear static files before warming up static cache.
+     * Set file path maximum length (determined by operating system config)
      */
-    'clear_before_warm_up' => false,
+    'filepath_max_length' => 4096,
+
+    /**
+     * Set filename maximum length (determined by operating system config)
+     */
+    'filename_max_length' => 255,
 ];
