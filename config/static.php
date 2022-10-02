@@ -4,7 +4,7 @@ return [
     /**
      * Path within storage disk to save files in.
      */
-    'path' => storage_path('app/static'),
+    'path' => public_path('static'),
 
     /**
      * Configure a fallback cache driver.
