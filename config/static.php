@@ -11,17 +11,26 @@ return [
      */
     'fallback_cache' => 'memcached',
 
-    /**
-     * Clear static files before warming up static cache.
-     * When disabled, the cache is warmed up rather by updating and overwriting files instead of starting without an existing cache.
-     */
-    'clear_before_warm_up' => false,
+    'build' => [
+        /**
+         * Clear static files before building static cache.
+         * When disabled, the cache is warmed up rather by updating and overwriting files instead of starting without an existing cache.
+         */
+        'clear_before_start' => false,
 
-    /**
-     * HTTP Header that is being sent to web server by warm up command, to recognize and pass through static cache and
-     * hit the Laravel application on the server.
-     */
-    'warm_up_http_header' => 'X-Laravel-Static',
+        /**
+         * Concurrency for crawling to warm up static cache.
+         */
+        'concurrency' => 5,
+
+        /**
+         * HTTP header that can be used to bypass the cache. Useful for updating the cache without needing to clear it first,
+         * or to monitor the performance of your application.
+         */
+        'bypass_header' => [
+            'X-Laravel-Static' => 'off',
+        ],
+    ],
 
     /**
      * Different caches per domain.
@@ -37,7 +46,7 @@ return [
     /**
      * Define if you want to save the static cache after response has been sent to browser.
      */
-    'on_termination' => false,
+    'on_termination' => true,
 
     /**
      * This setting prevents saving the same static cache file twice (with and without trailing slash) using a 302 redirect.

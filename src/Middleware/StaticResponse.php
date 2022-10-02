@@ -16,10 +16,13 @@ class StaticResponse
 
     protected Filesystem $files;
 
+    protected array $bypassHeader;
+
     public function __construct(Repository $config, Filesystem $files)
     {
         $this->config = $config;
         $this->files = $files;
+        $this->bypassHeader = $this->config->get('static.build.bypass_header');
     }
 
     /**
@@ -93,7 +96,8 @@ class StaticResponse
     {
         return
             $request->isMethod('GET') &&
-            $response->getStatusCode() == 200;
+            $response->getStatusCode() == 200 &&
+            $request->header(array_key_first($this->bypassHeader)) != array_shift($this->bypassHeader);
     }
 
     /**

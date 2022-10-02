@@ -4,6 +4,7 @@ namespace Vormkracht10\LaravelStatic;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Vormkracht10\LaravelStatic\Commands\StaticBuildCommand;
 use Vormkracht10\LaravelStatic\Commands\StaticClearCommand;
 
 class LaravelStaticServiceProvider extends PackageServiceProvider
@@ -13,6 +14,9 @@ class LaravelStaticServiceProvider extends PackageServiceProvider
         $package
             ->name('laravel-static')
             ->hasConfigFile()
-            ->hasCommand(StaticClearCommand::class);
+            ->hasCommands([
+                StaticClearCommand::class,
+                StaticBuildCommand::class,
+            ]);
     }
 }
