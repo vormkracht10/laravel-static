@@ -46,7 +46,7 @@ return [
     /**
      * Define if you want to save the static cache after response has been sent to browser.
      */
-    'on_termination' => true,
+    'on_termination' => false,
 
     /**
      * This setting prevents saving the same static cache file twice (with and without trailing slash) using a 302 redirect.
