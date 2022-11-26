@@ -192,7 +192,7 @@ class StaticResponse
             $extension = 'xml';
         }
 
-        if(str_ends_with($filename, $extension)) {
+        if (str_ends_with($filename, $extension)) {
             return null;
         }
 
