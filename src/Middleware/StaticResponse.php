@@ -7,7 +7,6 @@ use Illuminate\Config\Repository;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use voku\helper\HtmlMin;
 
 class StaticResponse
@@ -30,10 +29,6 @@ class StaticResponse
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        if (null !== $redirect = $this->shouldChangeTrailingSlash($request)) {
-            return redirect($redirect);
-        }
-
         $response = $next($request);
 
         if (
@@ -51,7 +46,7 @@ class StaticResponse
     /**
      * Handle tasks after the response has been sent to the browser.
      */
-    public function terminate(Request $request, Response $response): void
+    public function terminate(Request $request, $response): void
     {
         if (
             $this->config->get('static.on_termination') &&
@@ -66,33 +61,7 @@ class StaticResponse
     /**
      * Handle tasks after the response has been sent to the browser.
      */
-    protected function shouldChangeTrailingSlash(Request $request): string|null
-    {
-        $queryString = ($request->getQueryString() ? '?'.$request->getQueryString() : '');
-
-        if (
-            ! $request->is('/') &&
-            $this->config->get('static.use_trailing_slash') &&
-            ! str_ends_with($request->getPathInfo(), '/')
-        ) {
-            return $request->getSchemeAndHttpHost().$request->getPathInfo().'/'.$queryString;
-        }
-
-        if (
-            ! $request->is('/') &&
-            ! $this->config->get('static.use_trailing_slash') &&
-            str_ends_with($request->getPathInfo(), '/')
-        ) {
-            return $request->getSchemeAndHttpHost().rtrim($request->getPathInfo(), '/').$queryString;
-        }
-
-        return null;
-    }
-
-    /**
-     * Handle tasks after the response has been sent to the browser.
-     */
-    protected function shouldBeStatic(Request $request, Response $response): bool
+    protected function shouldBeStatic(Request $request, $response): bool
     {
         return
             $request->isMethod('GET') &&
@@ -116,7 +85,7 @@ class StaticResponse
     /**
      * Minify response.
      */
-    public function minifyResponse(Response $response): Response
+    public function minifyResponse($response)
     {
         if (! $this->config->get('static.minify_html')) {
             return $response;
@@ -137,7 +106,7 @@ class StaticResponse
     /**
      * Handle tasks after the response has been sent to the browser.
      */
-    public function createStaticFile(Request $request, Response $response): void
+    public function createStaticFile(Request $request, $response): void
     {
         [$path, $file] = $this->generateFilepath($request, $response);
 
@@ -203,32 +172,41 @@ class StaticResponse
     /**
      * Get file extension based on response content type.
      */
-    protected function getFileExtension(Response|JsonResponse $response): string
+    protected function getFileExtension($filename, $response): ?string
     {
         $contentType = $response->headers->get('Content-Type');
+
+        $extension = 'html';
 
         if (
             $response instanceof JsonResponse ||
             $contentType == 'application/json'
         ) {
-            return 'json';
+            $extension = 'json';
         }
 
-        if (in_array($contentType, ['text/xml', 'application/xml'])) {
-            return 'xml';
+        if (
+            starts_with($contentType, 'text/xml') ||
+            starts_with($contentType, 'application/xml')
+        ) {
+            $extension = 'xml';
         }
 
-        return 'html';
+        if(str_ends_with($filename, $extension)) {
+            return null;
+        }
+
+        return '.'.$extension;
     }
 
     /**
      * Generate static file path based on request following a matching pattern configured in Nginx
      */
-    public function generateFilepath(Request $request, Response $response): array
+    public function generateFilepath(Request $request, $response): array
     {
         $parts = $this->getUriParts($request);
 
-        $filename = '';
+        $filename = '__index__';
 
         if (! str_ends_with($request->getPathInfo(), '/')) {
             $filename = array_pop($parts);
@@ -239,11 +217,14 @@ class StaticResponse
             $parts,
         ]);
 
-        if ($this->config->get('static.include_query_string')) {
+        if (
+            $this->config->get('static.include_query_string') &&
+            ! blank($request->server('QUERY_STRING'))
+        ) {
             $filename .= '?'.$request->server('QUERY_STRING');
         }
 
-        $filename .= '.'.$this->getFileExtension($response);
+        $filename .= $this->getFileExtension($filename, $response);
 
         return [$path, $filename];
     }
