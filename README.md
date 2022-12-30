@@ -1,4 +1,4 @@
-# Build a static site using Laravel on the backend
+# Build a static with Laravel on the backend
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/vormkracht10/laravel-static.svg?style=flat-square)](https://packagist.org/packages/vormkracht10/laravel-static)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/vormkracht10/laravel-static/run-tests?label=tests)](https://github.com/vormkracht10/laravel-static/actions?query=workflow%3Arun-tests+branch%3Amain)

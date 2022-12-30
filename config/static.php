@@ -4,7 +4,7 @@ return [
     /**
      * Path within storage disk to save files in.
      */
-    'path' => public_path('static'),
+    'path' => storage_path('public/static'),
 
     /**
      * Configure a fallback cache driver.
@@ -47,12 +47,6 @@ return [
      * Define if you want to save the static cache after response has been sent to browser.
      */
     'on_termination' => false,
-
-    /**
-     * This setting prevents saving the same static cache file twice (with and without trailing slash) using a 302 redirect.
-     * Enable when you want to use trailing slashes.
-     */
-    'use_trailing_slash' => false,
 
     /**
      * Minify HTML before saving static file.
