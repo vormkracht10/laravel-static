@@ -44,12 +44,12 @@ class StaticBuildCommand extends Command
                 'User-Agent' => 'LaravelStatic/1.0',
             ],
         ])
-        ->setCrawlObserver(new StaticCrawlObserver)
-        ->setCrawlProfile(new CrawlInternalUrls($this->config->get('app.url')))
-        ->acceptNofollowLinks()
-        ->setConcurrency($this->config->get('static.build.concurrency'))
-        ->setDefaultScheme('https')
+            ->setCrawlObserver(new StaticCrawlObserver)
+            ->setCrawlProfile(new CrawlInternalUrls($this->config->get('app.url')))
+            ->acceptNofollowLinks()
+            ->setConcurrency($this->config->get('static.build.concurrency'))
+            ->setDefaultScheme('https')
         // ->setParseableMimeTypes(['text/html', 'text/plain'])
-        ->startCrawling($this->config->get('app.url'));
+            ->startCrawling($this->config->get('app.url'));
     }
 }

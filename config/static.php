@@ -6,11 +6,6 @@ return [
      */
     'path' => storage_path('public/static'),
 
-    /**
-     * Configure a fallback cache driver.
-     */
-    'fallback_cache' => 'memcached',
-
     'build' => [
         /**
          * Clear static files before building static cache.
@@ -32,34 +27,38 @@ return [
         ],
     ],
 
-    /**
-     * Different caches per domain.
-     */
-    'include_domain' => true,
+    'files' => [
+        /**
+         * Different caches per domain.
+         */
+        'include_domain' => true,
 
-    /**
-     * When query string is included, every unique query string combination creates a new static file.
-     * When disabled, the URL is marked as identical regardless of the query string.
-     */
-    'include_query_string' => true,
+        /**
+         * When query string is included, every unique query string combination creates a new static file.
+         * When disabled, the URL is marked as identical regardless of the query string.
+         */
+        'include_query_string' => true,
 
-    /**
-     * Define if you want to save the static cache after response has been sent to browser.
-     */
-    'on_termination' => false,
+        /**
+         * Set file path maximum length (determined by operating system config)
+         */
+        'filepath_max_length' => 4096,
 
-    /**
-     * Minify HTML before saving static file.
-     */
-    'minify_html' => true,
+        /**
+         * Set filename maximum length (determined by operating system config)
+         */
+        'filename_max_length' => 255,
+    ],
 
-    /**
-     * Set file path maximum length (determined by operating system config)
-     */
-    'filepath_max_length' => 4096,
+    'optimizations' => [
+        /**
+         * Define if you want to save the static cache after response has been sent to browser.
+         */
+        'on_termination' => false,
 
-    /**
-     * Set filename maximum length (determined by operating system config)
-     */
-    'filename_max_length' => 255,
+        /**
+         * Minify HTML before saving static file.
+         */
+        'minify_html' => true,
+    ],
 ];

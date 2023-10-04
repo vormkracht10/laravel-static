@@ -32,7 +32,7 @@ class StaticResponse
         $response = $next($request);
 
         if (
-            ! $this->config->get('static.on_termination') &&
+            ! $this->config->get('static.optimizations.on_termination') &&
             $this->shouldBeStatic($request, $response)
         ) {
             $response = $this->minifyResponse($response);
@@ -49,7 +49,7 @@ class StaticResponse
     public function terminate(Request $request, $response): void
     {
         if (
-            $this->config->get('static.on_termination') &&
+            $this->config->get('static.optimizations.on_termination') &&
             $this->shouldBeStatic($request, $response)
         ) {
             $response = $this->minifyResponse($response);
@@ -149,7 +149,7 @@ class StaticResponse
     /**
      * Get URI in parts.
      */
-    public function getDomain(Request $request): string|null
+    public function getDomain(Request $request): ?string
     {
         return $request->server('HTTP_HOST');
     }
@@ -236,13 +236,13 @@ class StaticResponse
     {
         $filenameLength = strlen(basename($filepath));
 
-        if ($filenameLength >= $this->config->get('static.filename_max_length')) {
+        if ($filenameLength >= $this->config->get('static.files.filename_max_length')) {
             return true;
         }
 
         $filepathLength = strlen($filepath);
 
-        if ($filepathLength >= $this->config->get('static.filepath_max_length')) {
+        if ($filepathLength >= $this->config->get('static.files.filepath_max_length')) {
             return true;
         }
 
