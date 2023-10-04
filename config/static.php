@@ -8,13 +8,29 @@ return [
 
     'build' => [
         /**
+         * Use a web crawler to find all links to cache
+         */
+        'crawler' => true,
+    
+        /**
+         * Build cache for non-dynamic routes
+         */
+        'routes' => false,
+    
+        /**
+         * Build cache for these defined URLs
+         * Ideally when using dynamic routes, like /posts/{slug}
+         */
+        'urls' => [],
+    
+        /**
          * Clear static files before building static cache.
          * When disabled, the cache is warmed up rather by updating and overwriting files instead of starting without an existing cache.
          */
         'clear_before_start' => false,
 
         /**
-         * Concurrency for crawling to warm up static cache.
+         * Number of concurrent http requests to build static cache.
          */
         'concurrency' => 5,
 
