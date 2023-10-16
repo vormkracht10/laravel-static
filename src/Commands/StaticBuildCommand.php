@@ -7,7 +7,6 @@ use Illuminate\Config\Repository;
 use Illuminate\Console\Command;
 use Spatie\Crawler\Crawler;
 use Spatie\Crawler\CrawlProfiles\CrawlInternalUrls;
-use Vormkracht10\LaravelStatic\Crawler\StaticCrawlObserver;
 use Vormkracht10\LaravelStatic\LaravelStatic;
 
 class StaticBuildCommand extends Command
@@ -44,7 +43,6 @@ class StaticBuildCommand extends Command
                 'User-Agent' => 'LaravelStatic/1.0',
             ],
         ])
-            ->setCrawlObserver(new StaticCrawlObserver)
             ->setCrawlProfile(new CrawlInternalUrls($this->config->get('app.url')))
             ->acceptNofollowLinks()
             ->setConcurrency($this->config->get('static.build.concurrency'))
