@@ -14,9 +14,9 @@ class PreventStaticResponseMiddleware
 
         $key = array_key_first($bypass);
 
-        $value = $bypass[$key];
+        $value = $bypass[$key] ?? null;
 
-        if (! $request->header($key) === $value) {
+        if (! $value || $request->header($key) !== $value) {
             return $next($request);
         }
 
