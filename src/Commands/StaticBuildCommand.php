@@ -94,7 +94,7 @@ class StaticBuildCommand extends Command
             ->setCrawlProfile($profile)
             ->setConcurrency($this->config->get('static.build.concurrency'))
             ->setDefaultScheme($this->config->get('static.build.default_scheme'));
-//            ->setParseableMimeTypes(['text/html', 'text/plain'])
+        //            ->setParseableMimeTypes(['text/html', 'text/plain'])
 
         if ($this->config->get('static.build.accept_no_follow')) {
             $crawler->acceptNofollowLinks();
