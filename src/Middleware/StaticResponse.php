@@ -217,7 +217,7 @@ class StaticResponse
             $parts,
         ]);
 
-        $filename.= '?';
+        $filename .= '?';
 
         if (
             $this->config->get('static.include_query_string') &&

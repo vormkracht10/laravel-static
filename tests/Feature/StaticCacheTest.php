@@ -36,7 +36,7 @@ it('minifies HTML', function () {
 
     $disk = LaravelStatic::disk();
 
-    $html = <<<HTML
+    $html = <<<'HTML'
 <h1>Hello!</h1>
 <h2>Hello</h2>
 HTML;
