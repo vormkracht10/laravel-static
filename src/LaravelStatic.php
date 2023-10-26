@@ -3,7 +3,9 @@
 namespace Vormkracht10\LaravelStatic;
 
 use Illuminate\Config\Repository;
+use Illuminate\Contracts\Filesystem\Filesystem as FilesystemContract;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Storage;
 
 class LaravelStatic
 {
@@ -19,13 +21,25 @@ class LaravelStatic
 
     public function clear(): bool
     {
-        $files = $this->files->allFiles(directory: $this->config->get('static.path'), hidden: false);
+        $disk = $this->disk();
 
-        return $this->files->delete($files);
+        $files = $disk->allFiles();
+
+        return $disk->delete($files);
     }
 
     public function forget(string $path): bool
     {
         return $this->files->delete($path);
+    }
+
+    public function disk(string $override = null): FilesystemContract
+    {
+        $disk = $override ?? $this->config->get(
+            'static.files.disk',
+            'static',
+        );
+
+        return Storage::disk($disk);
     }
 }

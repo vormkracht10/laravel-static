@@ -3,18 +3,26 @@
 namespace Vormkracht10\LaravelStatic\Crawler;
 
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Console\View\Components\Factory as ComponentFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Spatie\Crawler\CrawlObservers\CrawlObserver;
 
 class StaticCrawlObserver extends CrawlObserver
 {
+    protected ComponentFactory $components;
+
+    public function __construct(ComponentFactory $components)
+    {
+        $this->components = $components;
+    }
+
     /**
      * Called when the crawler will crawl the url.
      */
     public function willCrawl(UriInterface $url): void
     {
-        // ...
+        //
     }
 
     /**
@@ -25,7 +33,7 @@ class StaticCrawlObserver extends CrawlObserver
         ResponseInterface $response,
         UriInterface $foundOnUrl = null
     ): void {
-        console()->info('✔ '.$url);
+        $this->components->info("✔ {$url} has been crawled");
     }
 
     /**
@@ -36,7 +44,7 @@ class StaticCrawlObserver extends CrawlObserver
         RequestException $requestException,
         UriInterface $foundOnUrl = null
     ): void {
-        console()->error('✘ '.$url);
+        $this->components->error("✘ failed to crawl path ({$url})");
     }
 
     /**
@@ -44,6 +52,6 @@ class StaticCrawlObserver extends CrawlObserver
      */
     public function finishedCrawling(): void
     {
-        console()->info('✔ Static build completed');
+        $this->components->info('✔ Static build completed');
     }
 }
