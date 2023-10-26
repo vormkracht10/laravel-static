@@ -82,7 +82,7 @@ class StaticBuildCommand extends Command
 
         $profile = $this->config->get('static.build.crawl_profile');
 
-        Crawler::create([
+        $crawler = Crawler::create([
             RequestOptions::VERIFY => ! app()->environment('local', 'testing'),
             RequestOptions::ALLOW_REDIRECTS => true,
             RequestOptions::HEADERS => [
@@ -92,10 +92,14 @@ class StaticBuildCommand extends Command
         ])
             ->setCrawlObserver(new StaticCrawlObserver($this->components))
             ->setCrawlProfile($profile)
-            ->acceptNofollowLinks()
             ->setConcurrency($this->config->get('static.build.concurrency'))
-            ->setDefaultScheme('https')
+            ->setDefaultScheme($this->config->get('static.build.default_scheme'));
 //            ->setParseableMimeTypes(['text/html', 'text/plain'])
-            ->startCrawling($this->config->get('app.url'));
+
+        if ($this->config->get('static.build.accept_no_follow')) {
+            $crawler->acceptNofollowLinks();
+        }
+
+        $crawler->startCrawling($this->config->get('app.url'));
     }
 }

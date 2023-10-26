@@ -24,7 +24,7 @@ return [
         /**
          * Whether to follow links on pages.
          */
-        'no_follow' => true,
+        'accept_no_follow' => true,
 
         /**
          * The default scheme the crawler will use.
