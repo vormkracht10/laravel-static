@@ -41,7 +41,6 @@ class LaravelStatic
     {
         $disk = $override ?? $this->config->get(
             'static.files.disk',
-            'static',
         );
 
         return Storage::disk($disk);

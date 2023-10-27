@@ -34,7 +34,7 @@ class StaticBuildCommand extends Command
 
     public function handle(): void
     {
-        if ($this->config->get('static.build.clear_before_start', true)) {
+        if ($this->config->get('static.build.clear_before_start')) {
             $this->call(StaticClearCommand::class);
         }
 
@@ -91,7 +91,13 @@ class StaticBuildCommand extends Command
     {
         $bypassHeader = $this->config->get('static.build.bypass_header');
 
-        $profile = $this->config->get('static.build.crawl_profile');
+        $profile = new ($this->config->get('static.build.crawl_profile'))(
+            $this->config->get('app.url'),
+        );
+
+        $observer = new ($this->config->get('static.build.crawl_observer'))(
+            $this->components,
+        );
 
         $crawler = Crawler::create([
             RequestOptions::VERIFY => ! app()->environment('local', 'testing'),
@@ -102,11 +108,10 @@ class StaticBuildCommand extends Command
             ],
         ])
             ->acceptNofollowLinks()
-            ->setCrawlObserver(new StaticCrawlObserver($this->components))
+            ->setCrawlObserver($observer)
             ->setCrawlProfile($profile)
             ->setConcurrency($this->config->get('static.build.concurrency'))
             ->setDefaultScheme($this->config->get('static.build.default_scheme'));
-        //            ->setParseableMimeTypes(['text/html', 'text/plain'])
 
         if ($this->config->get('static.build.accept_no_follow')) {
             $crawler->acceptNofollowLinks();

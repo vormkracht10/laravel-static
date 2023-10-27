@@ -1,6 +1,7 @@
 <?php
 
 use Spatie\Crawler\CrawlProfiles\CrawlInternalUrls;
+use Vormkracht10\LaravelStatic\Crawler\StaticCrawlObserver;
 
 return [
     /**
@@ -32,9 +33,14 @@ return [
         'default_scheme' => 'https',
 
         /**
+         * The crawl observer that will be used to handle crawl related events.
+         */
+        'crawl_observer' => StaticCrawlObserver::class,
+
+        /**
          * The crawl profile that will be used by the crawler.
          */
-        'crawl_profile' => new CrawlInternalUrls(config('app.url')),
+        'crawl_profile' => CrawlInternalUrls::class,
 
         /**
          * HTTP header that can be used to bypass the cache. Useful for updating the cache without needing to clear it first,
