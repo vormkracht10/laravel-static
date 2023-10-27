@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Spatie\Crawler\Crawler;
-use Vormkracht10\LaravelStatic\Crawler\StaticCrawlObserver;
 use Vormkracht10\LaravelStatic\LaravelStatic;
 use Vormkracht10\LaravelStatic\Middleware\StaticResponse;
 
