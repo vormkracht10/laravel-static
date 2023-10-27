@@ -19,7 +19,7 @@ class LaravelStatic
         $this->files = $files;
     }
 
-    public function clear(?array $paths = null): bool
+    public function clear(array $paths = null): bool
     {
         $disk = $this->disk();
 

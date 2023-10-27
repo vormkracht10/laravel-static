@@ -83,7 +83,7 @@ class StaticClearCommand extends Command
         $uris = Arr::wrap($uris);
 
         foreach ($uris as $uri) {
-            $paths[] = ltrim($uri, '/') . '?.html';
+            $paths[] = ltrim($uri, '/').'?.html';
         }
 
         return $paths ?? [];
