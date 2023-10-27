@@ -63,9 +63,20 @@ class StaticBuildCommand extends Command
 
             $response = Route::dispatchToRoute($request);
 
+            if (count($route->parameterNames()) !== 0) {
+                $id = $route->getName() ?? $route->uri();
+
+                $this->components->warn("Skipping route [{$id}], can not build routes with parameters");
+
+                continue;
+            }
+
             if (! $response->isOk()) {
                 $this->components->error("✘ failed to cache page on route \"{$route->uri()}\"");
+
                 $failed++;
+
+                continue;
             }
 
             $this->components->info("✔ page on route \"{$route->uri()}\" has been cached");
