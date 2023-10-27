@@ -90,6 +90,7 @@ class StaticBuildCommand extends Command
                 'User-Agent' => 'LaravelStatic/1.0',
             ],
         ])
+            ->acceptNofollowLinks()
             ->setCrawlObserver(new StaticCrawlObserver($this->components))
             ->setCrawlProfile($profile)
             ->setConcurrency($this->config->get('static.build.concurrency'))

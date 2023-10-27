@@ -22,12 +22,12 @@ class PreventStaticResponseMiddleware
 
         $route = Route::current();
 
-        $shouldHandle = in_array(
+        $hasStaticResponseMiddleware = in_array(
             StaticResponse::class,
             Route::gatherRouteMiddleware($route),
         );
 
-        if (! $shouldHandle) {
+        if (! $hasStaticResponseMiddleware) {
             return response(status: 200);
         }
 
