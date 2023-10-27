@@ -4,23 +4,21 @@ namespace Vormkracht10\LaravelStatic\Middleware;
 
 use Closure;
 use Illuminate\Config\Repository;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use voku\helper\HtmlMin;
+use Vormkracht10\LaravelStatic\Facades\LaravelStatic;
 
 class StaticResponse
 {
     protected Repository $config;
 
-    protected Filesystem $files;
-
     protected array $bypassHeader;
 
-    public function __construct(Repository $config, Filesystem $files)
+    public function __construct(Repository $config)
     {
         $this->config = $config;
-        $this->files = $files;
+
         $this->bypassHeader = $this->config->get('static.build.bypass_header');
     }
 
@@ -91,7 +89,7 @@ class StaticResponse
             return $response;
         }
 
-        if (! starts_with($response->headers->get('Content-Type'), 'text/html')) {
+        if (! str_starts_with($response->headers->get('Content-Type'), 'text/html')) {
             return $response;
         }
 
@@ -119,14 +117,16 @@ class StaticResponse
             return;
         }
 
-        $this->files->makeDirectory($path, 0775, true, true);
+        $disk = LaravelStatic::disk();
 
-        if (! $this->files->exists($this->config->get('static.path').'/.gitignore')) {
-            $this->files->put($this->config->get('static.path').'/.gitignore', '*'.PHP_EOL.'!.gitignore');
+        $disk->makeDirectory($path);
+
+        if (! $disk->exists($this->config->get('static.path').'/.gitignore')) {
+            $disk->put($this->config->get('static.path').'/.gitignore', '*'.PHP_EOL.'!.gitignore');
         }
 
         if ($response->getContent()) {
-            $this->files->put($filepath, $response->getContent(), true);
+            $disk->put($filepath, $response->getContent(), true);
         }
     }
 
@@ -186,8 +186,8 @@ class StaticResponse
         }
 
         if (
-            starts_with($contentType, 'text/xml') ||
-            starts_with($contentType, 'application/xml')
+            str_starts_with($contentType, 'text/xml') ||
+            str_starts_with($contentType, 'application/xml')
         ) {
             $extension = 'xml';
         }
@@ -206,7 +206,7 @@ class StaticResponse
     {
         $parts = $this->getUriParts($request);
 
-        $filename = '__index__';
+        $filename = '';
 
         if (! str_ends_with($request->getPathInfo(), '/')) {
             $filename = array_pop($parts);
@@ -217,11 +217,13 @@ class StaticResponse
             $parts,
         ]);
 
+        $filename .= '?';
+
         if (
             $this->config->get('static.include_query_string') &&
             ! blank($request->server('QUERY_STRING'))
         ) {
-            $filename .= '?'.$request->server('QUERY_STRING');
+            $filename .= $request->server('QUERY_STRING');
         }
 
         $filename .= $this->getFileExtension($filename, $response);
