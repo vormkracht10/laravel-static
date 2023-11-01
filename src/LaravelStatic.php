@@ -19,9 +19,13 @@ class LaravelStatic
         $this->files = $files;
     }
 
-    public function clear(): bool
+    public function clear(array $paths = null): bool
     {
         $disk = $this->disk();
+
+        if (! is_null($paths)) {
+            return $disk->delete($paths);
+        }
 
         $files = $disk->allFiles();
 
@@ -37,7 +41,6 @@ class LaravelStatic
     {
         $disk = $override ?? $this->config->get(
             'static.files.disk',
-            'static',
         );
 
         return Storage::disk($disk);
