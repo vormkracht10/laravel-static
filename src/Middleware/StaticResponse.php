@@ -109,6 +109,8 @@ class StaticResponse
         [$path, $file] = $this->generateFilepath($request, $response);
 
         $filepath = $this->joinPaths([
+            $request->method(),
+            $request->getHost(),
             $path,
             $file,
         ]);

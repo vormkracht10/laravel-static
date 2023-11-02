@@ -40,7 +40,7 @@ class StaticBuildCommand extends Command
         match ($driver = $this->config->get('static.driver', 'routes')) {
             'crawler' => $this->cacheWithCrawler(),
             'routes' => $this->cacheWithRoutes(),
-            default => throw new Exception("Static driver [{$driver}] is not supported"),
+            default => throw new Exception('Static driver '.$driver.' is not supported'),
         };
     }
 
@@ -63,26 +63,26 @@ class StaticBuildCommand extends Command
             $response = Route::dispatchToRoute($request);
 
             if (count($route->parameterNames()) !== 0) {
-                $id = $route->getName() ?? $route->uri();
+                $name = $route->getName() ?? $route->uri();
 
-                $this->components->warn("Skipping route [{$id}], can not build routes with parameters");
+                $this->components->warn('Skipping route: '.$name.', cannot cache routes with parameters');
 
                 continue;
             }
 
             if (! $response->isOk()) {
-                $this->components->error("✘ failed to cache page on route \"{$route->uri()}\"");
+                $this->components->error('Failed to cache route '.$route->uri());
 
                 $failed++;
 
                 continue;
             }
 
-            $this->components->info("✔ page on route \"{$route->uri()}\" has been cached");
+            $this->components->info('Route '.$route->uri().' has been cached');
         }
 
         if ($failed > 0) {
-            $this->components->warn("FAILED TO CACHE {$failed} PAGES");
+            $this->components->warn('Failed to cache '.$failed.' routes');
         }
     }
 
@@ -106,7 +106,6 @@ class StaticBuildCommand extends Command
                 'User-Agent' => 'LaravelStatic/1.0',
             ],
         ])
-            ->acceptNofollowLinks()
             ->setCrawlObserver($observer)
             ->setCrawlProfile($profile)
             ->setConcurrency($this->config->get('static.build.concurrency'))

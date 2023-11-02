@@ -17,7 +17,7 @@ it('can cache a page response', function ($route) {
 
     $this->get($route);
 
-    $path = "{$route}?.html";
+    $path = "GET/localhost/{$route}?.html";
 
     $disk->assertExists($path);
 
@@ -48,7 +48,7 @@ HTML;
 
     $this->get('/');
 
-    $actual = $disk->get('?.html');
+    $actual = $disk->get('GET/localhost/?.html');
 
     expect($actual)
         ->toBeString()

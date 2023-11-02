@@ -33,7 +33,7 @@ class StaticCrawlObserver extends CrawlObserver
         ResponseInterface $response,
         UriInterface $foundOnUrl = null
     ): void {
-        $this->components->info("✔ {$url} has been crawled");
+        $this->components->info('Crawled and cached url: '.$url);
     }
 
     /**
@@ -44,7 +44,7 @@ class StaticCrawlObserver extends CrawlObserver
         RequestException $requestException,
         UriInterface $foundOnUrl = null
     ): void {
-        $this->components->error("✘ failed to crawl path ({$url})");
+        $this->components->error('Failed to crawl url: '.$url);
     }
 
     /**
@@ -52,6 +52,6 @@ class StaticCrawlObserver extends CrawlObserver
      */
     public function finishedCrawling(): void
     {
-        $this->components->info('✔ Static build completed');
+        $this->components->info('Static cache build completed');
     }
 }

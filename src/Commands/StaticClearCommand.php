@@ -54,13 +54,13 @@ class StaticClearCommand extends Command
             $route = $routes->getByName($name);
 
             if (is_null($route)) {
-                $this->components->warn("Route [{$name}] not found");
+                $this->components->warn('Route '.$name.' not found');
 
                 continue;
             }
 
             if (count($route->parameterNames()) !== 0) {
-                $this->components->warn("Route [{$name}] expects parameters, use the -u option instead");
+                $this->components->warn('Route '.$name.' expects parameters, use the -u option instead');
 
                 continue;
             }
