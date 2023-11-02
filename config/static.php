@@ -55,7 +55,7 @@ return [
         /**
          * The filesystem disk that will be used to cache your pages.
          */
-        'disk' => env('STATIC_FILESYSTEM_DISK', 'local'),
+        'disk' => env('STATIC_FILESYSTEM_DISK', 'public'),
 
         /**
          * Different caches per domain.
