@@ -20,7 +20,7 @@ class StaticCrawlObserver extends CrawlObserver
     /**
      * Called when the crawler will crawl the url.
      */
-    public function willCrawl(UriInterface $url): void
+    public function willCrawl(UriInterface $url, ?string $linkText): void
     {
         //
     }
