@@ -20,7 +20,7 @@ class StaticCrawlObserver extends CrawlObserver
     /**
      * Called when the crawler will crawl the url.
      */
-    public function willCrawl(UriInterface $url): void
+    public function willCrawl(UriInterface $url, ?string $linkText): void
     {
         //
     }
@@ -31,7 +31,8 @@ class StaticCrawlObserver extends CrawlObserver
     public function crawled(
         UriInterface $url,
         ResponseInterface $response,
-        UriInterface $foundOnUrl = null
+        UriInterface $foundOnUrl = null,
+        ?string $linkText = null
     ): void {
         $this->components->info('Crawled and cached url: '.$url);
     }
@@ -42,7 +43,8 @@ class StaticCrawlObserver extends CrawlObserver
     public function crawlFailed(
         UriInterface $url,
         RequestException $requestException,
-        UriInterface $foundOnUrl = null
+        UriInterface $foundOnUrl = null,
+        ?string $linkText = null
     ): void {
         $this->components->error('Failed to crawl url: '.$url);
     }
