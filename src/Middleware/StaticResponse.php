@@ -62,9 +62,14 @@ class StaticResponse
     protected function shouldBeStatic(Request $request, $response): bool
     {
         return
-            $request->isMethod('GET') || $request->isMethod('HEAD') &&
+            $this->config->get('static.enabled') === true &&
             $response->getStatusCode() == 200 &&
-            $this->config->get('static.enabled') === true;
+            (
+                $request->isMethod('GET') ||
+                // TTFB checkers use HEAD requests,
+                // therefore we treat them the same as GET
+                $request->isMethod('HEAD')
+            );
     }
 
     /**
