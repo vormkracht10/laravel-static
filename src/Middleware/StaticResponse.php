@@ -63,7 +63,8 @@ class StaticResponse
     {
         return
             $request->isMethod('GET') &&
-            $response->getStatusCode() == 200;
+            $response->getStatusCode() == 200 &&
+            $this->config->get('static.enabled') === true;
     }
 
     /**
@@ -121,7 +122,7 @@ class StaticResponse
         $disk = LaravelStatic::disk();
 
         if (! $disk->exists('.gitignore')) {
-            $disk->put('.gitignore', '*'.PHP_EOL.'!.gitignore');
+            $disk->put('.gitignore', '*' . PHP_EOL . '!.gitignore');
         }
 
         if ($response->getContent()) {
@@ -153,7 +154,7 @@ class StaticResponse
         $path = $this->getDiskPath();
 
         if ($this->config->get('static.files.include_domain')) {
-            $path .= '/'.$this->getDomain($request);
+            $path .= '/' . $this->getDomain($request);
         }
 
         return $path;
@@ -161,7 +162,7 @@ class StaticResponse
 
     public function getDiskPath()
     {
-        return rtrim($this->config->get('filesystems.disks.'.$this->config->get('static.files.disk').'.root'), '/');
+        return rtrim($this->config->get('filesystems.disks.' . $this->config->get('static.files.disk') . '.root'), '/');
     }
 
     /**
@@ -191,7 +192,7 @@ class StaticResponse
             return null;
         }
 
-        return '.'.$extension;
+        return '.' . $extension;
     }
 
     /**

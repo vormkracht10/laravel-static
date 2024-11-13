@@ -10,6 +10,14 @@ return [
      */
     'driver' => 'crawler',
 
+    /**
+     * Enable or disable static caching (to quickly disable the creation of the static cache without detaching the middleware).
+     * Don't forget to clear the static cache if needed, this does does not happen using this setting.
+     * 
+     * A good practice is to enable this setting only in production using `app()->isProduction()`.
+     */
+    'enabled' => env('STATIC_ENABLED', true),
+
     'build' => [
         /**
          * Clear static files before building static cache.
@@ -55,7 +63,7 @@ return [
         /**
          * The filesystem disk that will be used to cache your pages.
          */
-        'disk' => env('STATIC_FILESYSTEM_DISK', 'public'),
+        'disk' => env('STATIC_DISK', 'public'),
 
         /**
          * Different caches per domain.
