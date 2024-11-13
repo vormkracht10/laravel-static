@@ -79,7 +79,7 @@ return [
         'filename_max_length' => 255,
     ],
 
-    'optimize' => [
+    'options' => [
         /**
          * Define if you want to save the static cache after response has been sent to browser.
          */
@@ -88,6 +88,6 @@ return [
         /**
          * Minify HTML before saving static file.
          */
-        'minify_html' => true,
+        'minify_html' => false,
     ],
 ];
