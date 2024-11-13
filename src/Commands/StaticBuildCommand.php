@@ -40,7 +40,7 @@ class StaticBuildCommand extends Command
         match ($driver = $this->config->get('static.driver', 'routes')) {
             'crawler' => $this->cacheWithCrawler(),
             'routes' => $this->cacheWithRoutes(),
-            default => throw new Exception('Static driver ' . $driver . ' is not supported'),
+            default => throw new Exception('Static driver '.$driver.' is not supported'),
         };
     }
 
@@ -50,7 +50,7 @@ class StaticBuildCommand extends Command
          * @var Collection<\Illuminate\Routing\Route> $routes
          */
         $routes = collect(Route::getRoutes()->get('GET'))->filter(
-            fn($route) => in_array(StaticResponse::class, Route::gatherRouteMiddleware($route)),
+            fn ($route) => in_array(StaticResponse::class, Route::gatherRouteMiddleware($route)),
         );
 
         $failed = 0;
@@ -65,24 +65,24 @@ class StaticBuildCommand extends Command
             if (count($route->parameterNames()) !== 0) {
                 $name = $route->getName() ?? $route->uri();
 
-                $this->components->warn('Skipping route: ' . $name . ', cannot cache routes with parameters');
+                $this->components->warn('Skipping route: '.$name.', cannot cache routes with parameters');
 
                 continue;
             }
 
             if (! $response->isOk()) {
-                $this->components->error('Failed to cache route ' . $route->uri());
+                $this->components->error('Failed to cache route '.$route->uri());
 
                 $failed++;
 
                 continue;
             }
 
-            $this->components->info('Route ' . $route->uri() . ' has been cached');
+            $this->components->info('Route '.$route->uri().' has been cached');
         }
 
         if ($failed > 0) {
-            $this->components->warn('Failed to cache ' . $failed . ' routes');
+            $this->components->warn('Failed to cache '.$failed.' routes');
         }
     }
 

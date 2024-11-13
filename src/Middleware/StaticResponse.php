@@ -94,7 +94,7 @@ class StaticResponse
         }
 
         $response->setContent(
-            (new HtmlMin())
+            (new HtmlMin)
                 ->minify($response->getContent())
         );
 
@@ -106,29 +106,26 @@ class StaticResponse
      */
     public function createStaticFile(Request $request, $response): void
     {
-        [$path, $file] = $this->generateFilepath($request, $response);
+        $filePath = $this->generateFilepath($request, $response);
 
-        $filepath = $this->joinPaths([
+        $filePath = $this->joinPaths([
             $request->getHost(),
             $request->method(),
-            $path,
-            $file,
+            $filePath,
         ]);
 
-        if ($this->exceedsMaxLength($filepath)) {
+        if ($this->exceedsMaxLength($filePath)) {
             return;
         }
 
         $disk = LaravelStatic::disk();
 
-        $disk->makeDirectory($path);
-
-        if (! $disk->exists($this->config->get('static.path') . '/.gitignore')) {
-            $disk->put($this->config->get('static.path') . '/.gitignore', '*' . PHP_EOL . '!.gitignore');
+        if (! $disk->exists('.gitignore')) {
+            $disk->put('.gitignore', '*' . PHP_EOL . '!.gitignore');
         }
 
         if ($response->getContent()) {
-            $disk->put($filepath, $response->getContent(), true);
+            $disk->put($filePath, $response->getContent(), true);
         }
     }
 
@@ -141,15 +138,7 @@ class StaticResponse
     }
 
     /**
-     * Get URI in parts.
-     */
-    public function getUriParts(Request $request): array
-    {
-        return array_filter(explode('/', $this->getUri($request)));
-    }
-
-    /**
-     * Get URI in parts.
+     * Get domain from request.
      */
     public function getDomain(Request $request): ?string
     {
@@ -161,14 +150,18 @@ class StaticResponse
      */
     public function basePath(Request $request): string
     {
-        $path = $this->config->get('static.path');
-        $path = rtrim($path, '/');
+        $path = $this->getDiskPath();
 
-        if ($this->config->get('static.include_domain')) {
+        if ($this->config->get('static.files.include_domain')) {
             $path .= '/' . $this->getDomain($request);
         }
 
         return $path;
+    }
+
+    public function getDiskPath()
+    {
+        return rtrim($this->config->get('filesystems.disks.' . $this->config->get('static.files.disk') . '.root'), '/');
     }
 
     /**
@@ -204,33 +197,22 @@ class StaticResponse
     /**
      * Generate static file path based on request following a matching pattern configured in Nginx
      */
-    public function generateFilepath(Request $request, $response): array
+    public function generateFilepath(Request $request, $response): string
     {
-        $parts = $this->getUriParts($request);
+        $filePath = $request->getPathInfo();
 
-        $filename = '';
-
-        if (! str_ends_with($request->getPathInfo(), '/')) {
-            $filename = array_pop($parts);
-        }
-
-        $path = $this->joinPaths([
-            $this->basePath($request),
-            $parts,
-        ]);
-
-        $filename .= '?';
+        $filePath .= '?';
 
         if (
             $this->config->get('static.files.include_query_string') &&
             ! blank($request->server('QUERY_STRING'))
         ) {
-            $filename .= $request->server('QUERY_STRING');
+            $filePath .= $request->server('QUERY_STRING');
         }
 
-        $filename .= $this->getFileExtension($filename, $response);
+        $filePath .= $this->getFileExtension($filePath, $response);
 
-        return [$path, $filename];
+        return $filePath;
     }
 
     /**
