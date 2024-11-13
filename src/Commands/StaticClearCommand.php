@@ -11,20 +11,13 @@ use Vormkracht10\LaravelStatic\LaravelStatic;
 
 class StaticClearCommand extends Command
 {
-    public $signature = 'static:clear {--u|uri=*} {--r|routes=*}';
+    public $signature = 'static:clear {--u|uri=*} {--r|routes=*} {--d|domain=*}';
 
     public $description = 'Clear static cached files';
 
-    protected Repository $config;
-
-    protected LaravelStatic $static;
-
-    public function __construct(Repository $config, LaravelStatic $static)
+    public function __construct(protected Repository $config, protected LaravelStatic $static)
     {
         parent::__construct();
-
-        $this->config = $config;
-        $this->static = $static;
     }
 
     public function handle(): void
@@ -54,13 +47,13 @@ class StaticClearCommand extends Command
             $route = $routes->getByName($name);
 
             if (is_null($route)) {
-                $this->components->warn('Route '.$name.' not found');
+                $this->components->warn('Route ' . $name . ' not found');
 
                 continue;
             }
 
             if (count($route->parameterNames()) !== 0) {
-                $this->components->warn('Route '.$name.' expects parameters, use the -u option instead');
+                $this->components->warn('Route ' . $name . ' expects parameters, use the -u option instead');
 
                 continue;
             }
@@ -83,7 +76,7 @@ class StaticClearCommand extends Command
         $uris = Arr::wrap($uris);
 
         foreach ($uris as $uri) {
-            $paths[] = ltrim($uri, '/').'?.html';
+            $paths[] = ($this->option('domain')[0] ? $this->option('domain')[0] . '/' : '') . 'GET/' . ltrim($uri, '/') . '?.html';
         }
 
         return $paths ?? [];

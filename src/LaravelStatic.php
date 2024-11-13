@@ -3,46 +3,28 @@
 namespace Vormkracht10\LaravelStatic;
 
 use Illuminate\Config\Repository;
-use Illuminate\Contracts\Filesystem\Filesystem as FilesystemContract;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Filesystem\Filesystem as Files;
+use Illuminate\Filesystem\FilesystemManager as Storage;
 
 class LaravelStatic
 {
-    protected Repository $config;
-
-    protected Filesystem $files;
-
-    public function __construct(Repository $config, Filesystem $files)
-    {
-        $this->config = $config;
-        $this->files = $files;
-    }
+    public function __construct(
+        protected Repository $config,
+        protected Files $files,
+        protected Storage $storage,
+    ) {}
 
     public function clear(?array $paths = null): bool
     {
-        $disk = $this->disk();
-
         if (! is_null($paths)) {
-            return $disk->delete($paths);
+            return $this->disk()->delete($paths);
         }
 
-        $files = $disk->allFiles();
-
-        return $disk->delete($files);
+        return $this->files->cleanDirectory($this->disk()->getConfig()['root']);
     }
 
-    public function forget(string $path): bool
+    public function disk(?string $override = null)
     {
-        return $this->files->delete($path);
-    }
-
-    public function disk(?string $override = null): FilesystemContract
-    {
-        $disk = $override ?? $this->config->get(
-            'static.files.disk',
-        );
-
-        return Storage::disk($disk);
+        return $this->storage->disk($override ?? $this->config->get('static.files.disk'));
     }
 }
