@@ -30,7 +30,7 @@ class StaticResponse
         $response = $next($request);
 
         if (
-            ! $this->config->get('static.optimizations.on_termination') &&
+            ! $this->config->get('static.options.on_termination') &&
             $this->shouldBeStatic($request, $response)
         ) {
             $response = $this->minifyResponse($response);
@@ -47,7 +47,7 @@ class StaticResponse
     public function terminate(Request $request, $response): void
     {
         if (
-            $this->config->get('static.optimizations.on_termination') &&
+            $this->config->get('static.options.on_termination') &&
             $this->shouldBeStatic($request, $response)
         ) {
             $response = $this->minifyResponse($response);
@@ -85,7 +85,7 @@ class StaticResponse
      */
     public function minifyResponse($response)
     {
-        if (! $this->config->get('static.minify_html')) {
+        if (! $this->config->get('static.options.minify_html')) {
             return $response;
         }
 
@@ -123,8 +123,8 @@ class StaticResponse
 
         $disk->makeDirectory($path);
 
-        if (! $disk->exists($this->config->get('static.path').'/.gitignore')) {
-            $disk->put($this->config->get('static.path').'/.gitignore', '*'.PHP_EOL.'!.gitignore');
+        if (! $disk->exists($this->config->get('static.path') . '/.gitignore')) {
+            $disk->put($this->config->get('static.path') . '/.gitignore', '*' . PHP_EOL . '!.gitignore');
         }
 
         if ($response->getContent()) {
@@ -165,7 +165,7 @@ class StaticResponse
         $path = rtrim($path, '/');
 
         if ($this->config->get('static.include_domain')) {
-            $path .= '/'.$this->getDomain($request);
+            $path .= '/' . $this->getDomain($request);
         }
 
         return $path;
@@ -198,7 +198,7 @@ class StaticResponse
             return null;
         }
 
-        return '.'.$extension;
+        return '.' . $extension;
     }
 
     /**
@@ -222,7 +222,7 @@ class StaticResponse
         $filename .= '?';
 
         if (
-            $this->config->get('static.include_query_string') &&
+            $this->config->get('static.files.include_query_string') &&
             ! blank($request->server('QUERY_STRING'))
         ) {
             $filename .= $request->server('QUERY_STRING');

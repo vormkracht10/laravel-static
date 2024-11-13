@@ -12,7 +12,7 @@ it('can cache a page response', function ($route) {
 
     $disk = LaravelStatic::disk();
 
-    Route::get($route, fn () => $route)
+    Route::get($route, fn() => $route)
         ->middleware(StaticResponse::class);
 
     $this->get($route);
@@ -31,7 +31,7 @@ it('can cache a page response', function ($route) {
 it('minifies HTML', function () {
     config([
         'static.files.disk' => 'local',
-        'static.minify_html' => true,
+        'static.options.minify_html' => true,
     ]);
 
     $disk = LaravelStatic::disk();
@@ -43,7 +43,7 @@ HTML;
 
     $minified = (new HtmlMin())->minify($html);
 
-    Route::get('/', fn () => $html)
+    Route::get('/', fn() => $html)
         ->middleware(StaticResponse::class);
 
     $this->get('/');

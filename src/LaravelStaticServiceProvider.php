@@ -26,7 +26,8 @@ class LaravelStaticServiceProvider extends PackageServiceProvider
     {
         $kernel = $this->app->make(Kernel::class);
 
-        $kernel->prependMiddlewareToGroup('web',
+        $kernel->prependMiddlewareToGroup(
+            'web',
             PreventStaticResponseMiddleware::class
         );
     }

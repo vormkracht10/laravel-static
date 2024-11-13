@@ -34,7 +34,7 @@ class StaticCrawlObserver extends CrawlObserver
         UriInterface $foundOnUrl = null,
         ?string $linkText = null
     ): void {
-        $this->components->info('Crawled and cached url: '.$url);
+        $this->components->info('Crawled and cached url: ' . $url);
     }
 
     /**
@@ -46,7 +46,7 @@ class StaticCrawlObserver extends CrawlObserver
         UriInterface $foundOnUrl = null,
         ?string $linkText = null
     ): void {
-        $this->components->error('Failed to crawl url: '.$url);
+        $this->components->error('Failed to crawl url: ' . $url);
     }
 
     /**
