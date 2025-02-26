@@ -1,13 +1,13 @@
 <?php
 
-namespace Vormkracht10\LaravelStatic\Middleware;
+namespace Backstage\Laravel\Static\Middleware;
 
 use Closure;
 use Illuminate\Config\Repository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use voku\helper\HtmlMin;
-use Vormkracht10\LaravelStatic\Facades\LaravelStatic;
+use Backstage\Laravel\Static\Facades\StaticCache;
 
 class StaticResponse
 {
@@ -124,7 +124,7 @@ class StaticResponse
             return;
         }
 
-        $disk = LaravelStatic::disk();
+        $disk = StaticCache::disk();
 
         if (! $disk->exists('.gitignore')) {
             $disk->put('.gitignore', '*' . PHP_EOL . '!.gitignore');

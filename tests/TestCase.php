@@ -1,9 +1,9 @@
 <?php
 
-namespace Vormkracht10\LaravelStatic\Tests;
+namespace Backstage\Laravel\Static\Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
-use Vormkracht10\LaravelStatic\LaravelStaticServiceProvider;
+use Backstage\Laravel\Static\StaticServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -15,7 +15,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            LaravelStaticServiceProvider::class,
+            StaticServiceProvider::class,
         ];
     }
 }

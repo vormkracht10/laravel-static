@@ -2,15 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use voku\helper\HtmlMin;
-use Vormkracht10\LaravelStatic\Facades\LaravelStatic;
-use Vormkracht10\LaravelStatic\Middleware\StaticResponse;
+use Backstage\Laravel\Static\Facades\StaticCache;
+use Backstage\Laravel\Static\Middleware\StaticResponse;
 
 it('can cache a page response', function ($route) {
     config([
         'static.files.disk' => 'local',
     ]);
 
-    $disk = LaravelStatic::disk();
+    $disk = StaticCache::disk();
 
     Route::get($route, fn () => $route)
         ->middleware(StaticResponse::class);
@@ -34,7 +34,7 @@ it('minifies HTML', function () {
         'static.options.minify_html' => true,
     ]);
 
-    $disk = LaravelStatic::disk();
+    $disk = StaticCache::disk();
 
     $html = <<<'HTML'
 <h1>Hello!</h1>

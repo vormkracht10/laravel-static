@@ -1,6 +1,6 @@
 <?php
 
-namespace Vormkracht10\LaravelStatic\Commands;
+namespace Backstage\Laravel\Static\Commands;
 
 use Exception;
 use GuzzleHttp\RequestOptions;
@@ -10,8 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Spatie\Crawler\Crawler;
-use Vormkracht10\LaravelStatic\LaravelStatic;
-use Vormkracht10\LaravelStatic\Middleware\StaticResponse;
+use Backstage\Laravel\Static\StaticCache;
+use Backstage\Laravel\Static\Middleware\StaticResponse;
 
 class StaticBuildCommand extends Command
 {
@@ -21,9 +21,9 @@ class StaticBuildCommand extends Command
 
     protected Repository $config;
 
-    protected LaravelStatic $static;
+    protected Static $static;
 
-    public function __construct(Repository $config, LaravelStatic $static)
+    public function __construct(Repository $config, Static $static)
     {
         parent::__construct();
 

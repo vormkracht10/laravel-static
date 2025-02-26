@@ -1,13 +1,13 @@
 <?php
 
-namespace Vormkracht10\LaravelStatic\Commands;
+namespace Backstage\Laravel\Static\Commands;
 
 use Illuminate\Config\Repository;
 use Illuminate\Console\Command;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route as Router;
-use Vormkracht10\LaravelStatic\LaravelStatic;
+use Backstage\Laravel\Static\StaticCache;
 
 class StaticClearCommand extends Command
 {
@@ -15,7 +15,7 @@ class StaticClearCommand extends Command
 
     public $description = 'Clear static cached files';
 
-    public function __construct(protected Repository $config, protected LaravelStatic $static)
+    public function __construct(protected Repository $config, protected Static $static)
     {
         parent::__construct();
     }

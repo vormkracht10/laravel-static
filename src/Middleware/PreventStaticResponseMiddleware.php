@@ -1,6 +1,6 @@
 <?php
 
-namespace Vormkracht10\LaravelStatic\Middleware;
+namespace Backstage\Laravel\Static\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

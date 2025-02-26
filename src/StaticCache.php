@@ -1,12 +1,12 @@
 <?php
 
-namespace Vormkracht10\LaravelStatic;
+namespace Backstage\Laravel\Static;
 
 use Illuminate\Config\Repository;
 use Illuminate\Filesystem\Filesystem as Files;
 use Illuminate\Filesystem\FilesystemManager as Storage;
 
-class LaravelStatic
+class StaticCache
 {
     public function __construct(
         protected Repository $config,

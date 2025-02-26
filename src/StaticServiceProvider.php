@@ -1,15 +1,15 @@
 <?php
 
-namespace Vormkracht10\LaravelStatic;
+namespace Backstage\Laravel\Static;
 
 use Illuminate\Contracts\Http\Kernel;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Vormkracht10\LaravelStatic\Commands\StaticBuildCommand;
-use Vormkracht10\LaravelStatic\Commands\StaticClearCommand;
-use Vormkracht10\LaravelStatic\Middleware\PreventStaticResponseMiddleware;
+use Backstage\Laravel\Static\Commands\StaticBuildCommand;
+use Backstage\Laravel\Static\Commands\StaticClearCommand;
+use Backstage\Laravel\Static\Middleware\PreventStaticResponseMiddleware;
 
-class LaravelStaticServiceProvider extends PackageServiceProvider
+class StaticServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {

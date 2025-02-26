@@ -1,12 +1,12 @@
 {
-    "name": "vormkracht10/laravel-static",
+    "name": "backstage/laravel-static",
     "description": "Serving your Laravel app with speed using static caching",
     "keywords": [
         "vormkracht10",
         "laravel",
         "laravel-static"
     ],
-    "homepage": "https://github.com/vormkracht10/laravel-static",
+    "homepage": "https://github.com/backstagephp/laravel-static",
     "license": "MIT",
     "authors": [
         {
@@ -17,10 +17,10 @@
     ],
     "require": {
         "php": "^8.1",
-        "illuminate/contracts": "^9.0|^10.0|^11.0",
+        "illuminate/contracts": "^11.0 || ^12.0",
         "laravel/helpers": "^1.6",
         "spatie/crawler": "^8.0",
-        "spatie/laravel-package-tools": "^1.13.0",
+        "spatie/laravel-package-tools": "^1.15.0",
         "voku/html-min": "^4.5"
     },
     "require-dev": {
@@ -35,12 +35,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Vormkracht10\\LaravelStatic\\": "src"
+            "Backstage\\Laravel\\Static\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Vormkracht10\\LaravelStatic\\Tests\\": "tests"
+            "Backstage\\Laravel\\Static\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -59,10 +59,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Vormkracht10\\LaravelStatic\\LaravelStaticServiceProvider"
+                "Backstage\\Laravel\\Static\\StaticServiceProvider"
             ],
             "aliases": {
-                "LaravelStatic": "Vormkracht10\\LaravelStatic\\Facades\\LaravelStatic"
+                "Static": "Backstage\\Laravel\\Static\\Facades\\StaticCache"
             }
         }
     },
