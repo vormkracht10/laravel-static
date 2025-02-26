@@ -21,7 +21,7 @@ class StaticBuildCommand extends Command
 
     protected Repository $config;
 
-    protected Static $static;
+    protected StaticCache $static;
 
     public function __construct(Repository $config, StaticCache $static)
     {
