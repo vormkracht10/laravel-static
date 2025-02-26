@@ -15,7 +15,7 @@ class StaticClearCommand extends Command
 
     public $description = 'Clear static cached files';
 
-    public function __construct(protected Repository $config, protected Static $static)
+    public function __construct(protected Repository $config, protected StaticCache $static)
     {
         parent::__construct();
     }
