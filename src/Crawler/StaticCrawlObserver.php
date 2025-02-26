@@ -1,6 +1,6 @@
 <?php
 
-namespace Backstage\Laravel\Static\Crawler;
+namespace Backstage\Static\Laravel\Crawler;
 
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Console\View\Components\Factory as ComponentFactory;

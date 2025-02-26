@@ -1,9 +1,9 @@
 <?php
 
-namespace Backstage\Laravel\Static\Tests;
+namespace Backstage\Static\Laravel\Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
-use Backstage\Laravel\Static\StaticServiceProvider;
+use Backstage\Static\Laravel\StaticServiceProvider;
 
 class TestCase extends Orchestra
 {

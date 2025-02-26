@@ -1,13 +1,13 @@
 <?php
 
-namespace Backstage\Laravel\Static\Middleware;
+namespace Backstage\Static\Laravel\Middleware;
 
 use Closure;
 use Illuminate\Config\Repository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use voku\helper\HtmlMin;
-use Backstage\Laravel\Static\Facades\StaticCache;
+use Backstage\Static\Laravel\Facades\StaticCache;
 
 class StaticResponse
 {

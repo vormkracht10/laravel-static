@@ -35,12 +35,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Backstage\\Laravel\\Static\\": "src"
+            "Backstage\\Static\\Laravel\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Backstage\\Laravel\\Static\\Tests\\": "tests"
+            "Backstage\\Static\\Laravel\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -59,10 +59,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Backstage\\Laravel\\Static\\StaticServiceProvider"
+                "Backstage\\Static\\Laravel\\StaticServiceProvider"
             ],
             "aliases": {
-                "Static": "Backstage\\Laravel\\Static\\Facades\\StaticCache"
+                "Static": "Backstage\\Static\\Laravel\\Facades\\StaticCache"
             }
         }
     },

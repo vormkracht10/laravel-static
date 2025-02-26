@@ -1,6 +1,6 @@
 <?php
 
-namespace Backstage\Laravel\Static\Commands;
+namespace Backstage\Static\Laravel\Commands;
 
 use Exception;
 use GuzzleHttp\RequestOptions;
@@ -10,8 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Spatie\Crawler\Crawler;
-use Backstage\Laravel\Static\StaticCache;
-use Backstage\Laravel\Static\Middleware\StaticResponse;
+use Backstage\Static\Laravel\StaticCache;
+use Backstage\Static\Laravel\Middleware\StaticResponse;
 
 class StaticBuildCommand extends Command
 {

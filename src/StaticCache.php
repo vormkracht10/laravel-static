@@ -1,6 +1,6 @@
 <?php
 
-namespace Backstage\Laravel\Static;
+namespace Backstage\Static\Laravel;
 
 use Illuminate\Config\Repository;
 use Illuminate\Filesystem\Filesystem as Files;

@@ -1,13 +1,13 @@
 <?php
 
-namespace Backstage\Laravel\Static;
+namespace Backstage\Static\Laravel;
 
 use Illuminate\Contracts\Http\Kernel;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Backstage\Laravel\Static\Commands\StaticBuildCommand;
-use Backstage\Laravel\Static\Commands\StaticClearCommand;
-use Backstage\Laravel\Static\Middleware\PreventStaticResponseMiddleware;
+use Backstage\Static\Laravel\Commands\StaticBuildCommand;
+use Backstage\Static\Laravel\Commands\StaticClearCommand;
+use Backstage\Static\Laravel\Middleware\PreventStaticResponseMiddleware;
 
 class StaticServiceProvider extends PackageServiceProvider
 {

@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use voku\helper\HtmlMin;
-use Backstage\Laravel\Static\Facades\StaticCache;
-use Backstage\Laravel\Static\Middleware\StaticResponse;
+use Backstage\Static\Laravel\Facades\StaticCache;
+use Backstage\Static\Laravel\Middleware\StaticResponse;
 
 it('can cache a page response', function ($route) {
     config([

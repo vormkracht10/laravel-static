@@ -1,6 +1,6 @@
 <?php
 
-namespace Backstage\Laravel\Static\Middleware;
+namespace Backstage\Static\Laravel\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

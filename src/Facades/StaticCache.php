@@ -1,6 +1,6 @@
 <?php
 
-namespace Backstage\Laravel\Static\Facades;
+namespace Backstage\Static\Laravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -11,6 +11,6 @@ class StaticCache extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \Backstage\Laravel\Static\StaticCache::class;
+        return \Backstage\Static\Laravel\StaticCache::class;
     }
 }
