@@ -1,16 +1,16 @@
 <?php
 
-namespace Vormkracht10\LaravelStatic\Facades;
+namespace Backstage\Laravel\Static\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
  * @see \Vormkracht10\LaravelStatic\LaravelStatic
  */
-class LaravelStatic extends Facade
+class StaticCache extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \Vormkracht10\LaravelStatic\LaravelStatic::class;
+        return \Backstage\Laravel\Static\StaticCache::class;
     }
 }

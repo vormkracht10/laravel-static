@@ -1,52 +1,52 @@
 <?php
 
-namespace Vormkracht10\LaravelStatic\Crawler;
+namespace Backstage\Laravel\Static\Crawler;
 
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Console\View\Components\Factory as ComponentFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Spatie\Crawler\CrawlObservers\CrawlObserver;
 
 class StaticCrawlObserver extends CrawlObserver
 {
+    protected ComponentFactory $components;
+
+    public function __construct(ComponentFactory $components)
+    {
+        $this->components = $components;
+    }
+
     /**
      * Called when the crawler will crawl the url.
-     *
-     * @param  \Psr\Http\Message\UriInterface  $url
      */
-    public function willCrawl(UriInterface $url): void
+    public function willCrawl(UriInterface $url, ?string $linkText): void
     {
-        // ...
+        //
     }
 
     /**
      * Called when the crawler has crawled the given url successfully.
-     *
-     * @param  \Psr\Http\Message\UriInterface  $url
-     * @param  \Psr\Http\Message\ResponseInterface  $response
-     * @param  \Psr\Http\Message\UriInterface|null  $foundOnUrl
      */
     public function crawled(
         UriInterface $url,
         ResponseInterface $response,
-        ?UriInterface $foundOnUrl = null
+        ?UriInterface $foundOnUrl = null,
+        ?string $linkText = null
     ): void {
-        console()->info('✔ '.$url);
+        $this->components->info('Crawled and cached url: '.$url);
     }
 
     /**
      * Called when the crawler had a problem crawling the given url.
-     *
-     * @param  \Psr\Http\Message\UriInterface  $url
-     * @param  \GuzzleHttp\Exception\RequestException  $requestException
-     * @param  \Psr\Http\Message\UriInterface|null  $foundOnUrl
      */
     public function crawlFailed(
         UriInterface $url,
         RequestException $requestException,
-        ?UriInterface $foundOnUrl = null
+        ?UriInterface $foundOnUrl = null,
+        ?string $linkText = null
     ): void {
-        console()->error('✘ '.$url);
+        $this->components->error('Failed to crawl url: '.$url);
     }
 
     /**
@@ -54,6 +54,6 @@ class StaticCrawlObserver extends CrawlObserver
      */
     public function finishedCrawling(): void
     {
-        console()->info('✔ Static build completed');
+        $this->components->info('Static cache build completed');
     }
 }

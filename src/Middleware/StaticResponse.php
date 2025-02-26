@@ -1,26 +1,24 @@
 <?php
 
-namespace Vormkracht10\LaravelStatic\Middleware;
+namespace Backstage\Laravel\Static\Middleware;
 
 use Closure;
 use Illuminate\Config\Repository;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use voku\helper\HtmlMin;
+use Backstage\Laravel\Static\Facades\StaticCache;
 
 class StaticResponse
 {
     protected Repository $config;
 
-    protected Filesystem $files;
-
     protected array $bypassHeader;
 
-    public function __construct(Repository $config, Filesystem $files)
+    public function __construct(Repository $config)
     {
         $this->config = $config;
-        $this->files = $files;
+
         $this->bypassHeader = $this->config->get('static.build.bypass_header');
     }
 
@@ -32,7 +30,7 @@ class StaticResponse
         $response = $next($request);
 
         if (
-            ! $this->config->get('static.on_termination') &&
+            ! $this->config->get('static.options.on_termination') &&
             $this->shouldBeStatic($request, $response)
         ) {
             $response = $this->minifyResponse($response);
@@ -49,7 +47,7 @@ class StaticResponse
     public function terminate(Request $request, $response): void
     {
         if (
-            $this->config->get('static.on_termination') &&
+            $this->config->get('static.options.on_termination') &&
             $this->shouldBeStatic($request, $response)
         ) {
             $response = $this->minifyResponse($response);
@@ -64,8 +62,14 @@ class StaticResponse
     protected function shouldBeStatic(Request $request, $response): bool
     {
         return
-            $request->isMethod('GET') &&
-            $response->getStatusCode() == 200;
+            $this->config->get('static.enabled') === true &&
+            $response->getStatusCode() == 200 &&
+            (
+                $request->isMethod('GET') ||
+                // TTFB checkers use HEAD requests,
+                // therefore we treat them the same as GET
+                $request->isMethod('HEAD')
+            );
     }
 
     /**
@@ -87,16 +91,16 @@ class StaticResponse
      */
     public function minifyResponse($response)
     {
-        if (! $this->config->get('static.minify_html')) {
+        if (! $this->config->get('static.options.minify_html')) {
             return $response;
         }
 
-        if (! starts_with($response->headers->get('Content-Type'), 'text/html')) {
+        if (! str_starts_with($response->headers->get('Content-Type'), 'text/html')) {
             return $response;
         }
 
         $response->setContent(
-            (new HtmlMin())
+            (new HtmlMin)
                 ->minify($response->getContent())
         );
 
@@ -108,25 +112,26 @@ class StaticResponse
      */
     public function createStaticFile(Request $request, $response): void
     {
-        [$path, $file] = $this->generateFilepath($request, $response);
+        $filePath = $this->generateFilepath($request, $response);
 
-        $filepath = $this->joinPaths([
-            $path,
-            $file,
+        $filePath = $this->joinPaths([
+            $request->getHost(),
+            $request->method(),
+            $filePath,
         ]);
 
-        if ($this->exceedsMaxLength($filepath)) {
+        if ($this->exceedsMaxLength($filePath)) {
             return;
         }
 
-        $this->files->makeDirectory($path, 0775, true, true);
+        $disk = StaticCache::disk();
 
-        if (! $this->files->exists($this->config->get('static.path').'/.gitignore')) {
-            $this->files->put($this->config->get('static.path').'/.gitignore', '*'.PHP_EOL.'!.gitignore');
+        if (! $disk->exists('.gitignore')) {
+            $disk->put('.gitignore', '*' . PHP_EOL . '!.gitignore');
         }
 
         if ($response->getContent()) {
-            $this->files->put($filepath, $response->getContent(), true);
+            $disk->put($filePath, $response->getContent(), true);
         }
     }
 
@@ -139,17 +144,9 @@ class StaticResponse
     }
 
     /**
-     * Get URI in parts.
+     * Get domain from request.
      */
-    public function getUriParts(Request $request): array
-    {
-        return array_filter(explode('/', $this->getUri($request)));
-    }
-
-    /**
-     * Get URI in parts.
-     */
-    public function getDomain(Request $request): string|null
+    public function getDomain(Request $request): ?string
     {
         return $request->server('HTTP_HOST');
     }
@@ -159,14 +156,18 @@ class StaticResponse
      */
     public function basePath(Request $request): string
     {
-        $path = $this->config->get('static.path');
-        $path = rtrim($path, '/');
+        $path = $this->getDiskPath();
 
-        if ($this->config->get('static.include_domain')) {
-            $path .= '/'.$this->getDomain($request);
+        if ($this->config->get('static.files.include_domain')) {
+            $path .= '/' . $this->getDomain($request);
         }
 
         return $path;
+    }
+
+    public function getDiskPath()
+    {
+        return rtrim($this->config->get('filesystems.disks.' . $this->config->get('static.files.disk') . '.root'), '/');
     }
 
     /**
@@ -186,8 +187,8 @@ class StaticResponse
         }
 
         if (
-            starts_with($contentType, 'text/xml') ||
-            starts_with($contentType, 'application/xml')
+            str_starts_with($contentType, 'text/xml') ||
+            str_starts_with($contentType, 'application/xml')
         ) {
             $extension = 'xml';
         }
@@ -196,37 +197,28 @@ class StaticResponse
             return null;
         }
 
-        return '.'.$extension;
+        return '.' . $extension;
     }
 
     /**
      * Generate static file path based on request following a matching pattern configured in Nginx
      */
-    public function generateFilepath(Request $request, $response): array
+    public function generateFilepath(Request $request, $response): string
     {
-        $parts = $this->getUriParts($request);
+        $filePath = $request->getPathInfo();
 
-        $filename = '__index__';
-
-        if (! str_ends_with($request->getPathInfo(), '/')) {
-            $filename = array_pop($parts);
-        }
-
-        $path = $this->joinPaths([
-            $this->basePath($request),
-            $parts,
-        ]);
+        $filePath .= '?';
 
         if (
-            $this->config->get('static.include_query_string') &&
+            $this->config->get('static.files.include_query_string') &&
             ! blank($request->server('QUERY_STRING'))
         ) {
-            $filename .= '?'.$request->server('QUERY_STRING');
+            $filePath .= $request->server('QUERY_STRING');
         }
 
-        $filename .= $this->getFileExtension($filename, $response);
+        $filePath .= $this->getFileExtension($filePath, $response);
 
-        return [$path, $filename];
+        return $filePath;
     }
 
     /**
@@ -236,13 +228,13 @@ class StaticResponse
     {
         $filenameLength = strlen(basename($filepath));
 
-        if ($filenameLength >= $this->config->get('static.filename_max_length')) {
+        if ($filenameLength >= $this->config->get('static.files.filename_max_length')) {
             return true;
         }
 
         $filepathLength = strlen($filepath);
 
-        if ($filepathLength >= $this->config->get('static.filepath_max_length')) {
+        if ($filepathLength >= $this->config->get('static.files.filepath_max_length')) {
             return true;
         }
 

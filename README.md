@@ -1,9 +1,11 @@
-# Build a static with Laravel on the backend
+# Build a static website with Laravel on the backend
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/vormkracht10/laravel-static.svg?style=flat-square)](https://packagist.org/packages/vormkracht10/laravel-static)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/vormkracht10/laravel-static/run-tests?label=tests)](https://github.com/vormkracht10/laravel-static/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/vormkracht10/laravel-static/Fix%20PHP%20code%20style%20issues?label=code%20style)](https://github.com/vormkracht10/laravel-static/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/vormkracht10/laravel-static.svg?style=flat-square)](https://packagist.org/packages/vormkracht10/laravel-static)
+[![Total Downloads](https://img.shields.io/packagist/dt/backstage/laravel-static.svg?style=flat-square)](https://packagist.org/packages/backstage/laravel-static)
+[![Tests](https://github.com/backstagephp/laravel-static/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/backstagephp/laravel-static/actions/workflows/run-tests.yml)
+[![PHPStan](https://github.com/backstagephp/laravel-static/actions/workflows/phpstan.yml/badge.svg?branch=main)](https://github.com/backstagephp/laravel-static/actions/workflows/phpstan.yml)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/backstagephp/laravel-static)
+![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/backstage/laravel-static)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/backstage/laravel-static.svg?style=flat-square)](https://packagist.org/packages/backstage/laravel-static)
 
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
 
@@ -12,7 +14,7 @@ This is where your description should go. Limit it to a paragraph or two. Consid
 You can install the package via composer:
 
 ```bash
-composer require vormkracht10/laravel-static
+composer require backstage/laravel-static
 ```
 
 You can publish and run the migrations with:
@@ -44,8 +46,7 @@ php artisan vendor:publish --tag="laravel-static-views"
 ## Usage
 
 ```php
-$laravelStatic = new Vormkracht10\LaravelStatic();
-echo $laravelStatic->echoPhrase('Hello, Vormkracht10!');
+
 ```
 
 ## Testing
@@ -68,7 +69,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [Mark van Eijk](https://github.com/vormkracht10)
+- [Mark van Eijk](https://github.com/backstagephp)
 - [All Contributors](../../contributors)
 
 ## License

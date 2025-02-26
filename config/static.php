@@ -1,27 +1,52 @@
 <?php
 
+use Spatie\Crawler\CrawlProfiles\CrawlInternalUrls;
+use Backstage\Laravel\Static\Crawler\StaticCrawlObserver;
+
 return [
     /**
-     * Path within storage disk to save files in.
+     * The driver that will be used to cache your pages.
+     * This can be either 'crawler' or 'routes'.
      */
-    'path' => storage_path('public/static'),
+    'driver' => 'crawler',
 
     /**
-     * Configure a fallback cache driver.
+     * Enable or disable static caching (to quickly disable the creation of the static cache without detaching the middleware).
+     * Don't forget to clear the static cache if needed, this does does not happen using this setting.
      */
-    'fallback_cache' => 'memcached',
+    'enabled' => env('STATIC_ENABLED', true),
 
     'build' => [
         /**
          * Clear static files before building static cache.
          * When disabled, the cache is warmed up rather by updating and overwriting files instead of starting without an existing cache.
          */
-        'clear_before_start' => false,
+        'clear_before_start' => true,
 
         /**
-         * Concurrency for crawling to warm up static cache.
+         * Number of concurrent http requests to build static cache.
          */
         'concurrency' => 5,
+
+        /**
+         * Whether to follow links on pages.
+         */
+        'accept_no_follow' => true,
+
+        /**
+         * The default scheme the crawler will use.
+         */
+        'default_scheme' => 'https',
+
+        /**
+         * The crawl observer that will be used to handle crawl related events.
+         */
+        'crawl_observer' => StaticCrawlObserver::class,
+
+        /**
+         * The crawl profile that will be used by the crawler.
+         */
+        'crawl_profile' => CrawlInternalUrls::class,
 
         /**
          * HTTP header that can be used to bypass the cache. Useful for updating the cache without needing to clear it first,
@@ -32,34 +57,43 @@ return [
         ],
     ],
 
-    /**
-     * Different caches per domain.
-     */
-    'include_domain' => true,
+    'files' => [
+        /**
+         * The filesystem disk that will be used to cache your pages.
+         */
+        'disk' => env('STATIC_DISK', 'public'),
 
-    /**
-     * When query string is included, every unique query string combination creates a new static file.
-     * When disabled, the URL is marked as identical regardless of the query string.
-     */
-    'include_query_string' => true,
+        /**
+         * Different caches per domain.
+         */
+        'include_domain' => true,
 
-    /**
-     * Define if you want to save the static cache after response has been sent to browser.
-     */
-    'on_termination' => false,
+        /**
+         * When query string is included, every unique query string combination creates a new static file.
+         * When disabled, the URL is marked as identical regardless of the query string.
+         */
+        'include_query_string' => true,
 
-    /**
-     * Minify HTML before saving static file.
-     */
-    'minify_html' => true,
+        /**
+         * Set file path maximum length (determined by operating system config)
+         */
+        'filepath_max_length' => 4096,
 
-    /**
-     * Set file path maximum length (determined by operating system config)
-     */
-    'filepath_max_length' => 4096,
+        /**
+         * Set filename maximum length (determined by operating system config)
+         */
+        'filename_max_length' => 255,
+    ],
 
-    /**
-     * Set filename maximum length (determined by operating system config)
-     */
-    'filename_max_length' => 255,
+    'options' => [
+        /**
+         * Define if you want to save the static cache after response has been sent to browser.
+         */
+        'on_termination' => false,
+
+        /**
+         * Minify HTML before saving static file.
+         */
+        'minify_html' => false,
+    ],
 ];

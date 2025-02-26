@@ -1,36 +1,21 @@
 <?php
 
-namespace Vormkracht10\LaravelStatic\Tests;
+namespace Backstage\Laravel\Static\Tests;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Vormkracht10\LaravelStatic\LaravelStaticServiceProvider;
+use Backstage\Laravel\Static\StaticServiceProvider;
 
 class TestCase extends Orchestra
 {
     protected function setUp(): void
     {
         parent::setUp();
-
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Vormkracht10\\LaravelStatic\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            LaravelStaticServiceProvider::class,
+            StaticServiceProvider::class,
         ];
-    }
-
-    public function getEnvironmentSetUp($app)
-    {
-        config()->set('database.default', 'testing');
-
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_laravel-static_table.php.stub';
-        $migration->up();
-        */
     }
 }
